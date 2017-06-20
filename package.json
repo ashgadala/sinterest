@@ -1,0 +1,36 @@
+{
+  "name": "sinterest",
+  "version": "1.0.0",
+  "description": "Clone of pinterest",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tejas-kr/sinterest.git"
+  },
+  "keywords": [
+    "pinterest",
+    "clone",
+    "sinterst"
+  ],
+  "author": "tejas jaiswal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tejas-kr/sinterest/issues"
+  },
+  "homepage": "https://github.com/tejas-kr/sinterest#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^3.21.2",
+    "express-session": "^1.15.3",
+    "mongoose": "^4.10.7",
+    "nunjucks": "^3.0.1",
+    "passport": "^0.3.2",
+    "passport-twitter": "^1.0.4",
+    "serve-favicon": "^2.4.3"
+  }
+}
