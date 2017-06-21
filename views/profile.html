@@ -21,14 +21,48 @@
 </head>
 <body>
 	<div class="container main">
-	<div class="nav">
-		{# USER NAME HERE #}
-		<a href="/logout"><button class="button">Sign out</button></a>
-		<a href="/home"><button class="button">Home</button></a>
-	</div>
+		<div class="nav">
+			<span style="font-size: 25pt; color: darkslategrey">{{ pin.username }}</span>
+			<a href="/logout"><button class="button">Sign out</button></a>
+			<a href="/home"><button class="button">Home</button></a>
+		</div>
+
 		<div class="jumbotron center">
+
+			<div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
+				{% for pins in pin %}
+					<div class="grid-item">
+						<div class="img-holder">
+							<img src="{{ pins.url }}" class="grid-thumbnail"/>
+						</div>
+						<div class="grid-thumbnail-text">
+							<p class="text-center">{{ pins.title }}</p>
+							<p class="text-center">{{ pins.username }}</p>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
 
 		</div>
 	</div>
 </body>
 </html>
+
+
+<!--<hr>
+<br />
+<div class="masonry-grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
+    <% pins.forEach(function(item) { %>
+    <div class="grid-item">
+        <div class="img-holder">
+            <img src="<%= item.url %>" class="grid-thumbnail"/>
+        </div>
+        <div class="grid-thumbnail-text">
+            <p class="text-center"><%= item.title %></p>
+            <% if (login) { %>
+            <p><a href="/api/delete/<%= item._id %>"><span class="text-center deleteTitle">Delete</span></a></p>
+            <% } %>
+        </div>
+    </div>
+    <% }); %>
+</div>-->

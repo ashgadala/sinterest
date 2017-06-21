@@ -81,10 +81,10 @@ app.get('/auth/twitter/callback', passport.authenticate('twitter', {
     failureRedirect: '/'
 }));
 app.get('/', function (req, res, next) {
-    if (req.isAuthenticated()) {
-        return res.redirect('/home');
+    if (!req.isAuthenticated()) {
+        return res.render('index.html');
     }
-    res.render('index.html');
+    res.redirect('/home');
 });
 app.get('/home', function (req, res, next) {
     if (!req.isAuthenticated()) {
@@ -96,7 +96,10 @@ app.get('/home', function (req, res, next) {
     });
 });
 app.get('/profile', function (req, res, next) {
-    res.render('profile.html', { name: req.user.username });
+    Pin.find({ username: req.user.username }).select({ title: 1, url: 1, username: 1 }).exec(function (err, pins) {
+        console.log(pins);
+        res.render('profile.html', { pin: pins });
+    });
 });
 app.post('/submit', function (req, res, next) {
     var entry = new Pin({
