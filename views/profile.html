@@ -22,11 +22,13 @@
 <body>
 	<div class="container main">
 		<div class="nav">
-			<span style="font-size: 25pt; color: darkslategrey">{{ pin.username }}</span>
+			<span style="font-size: 25pt; color: darkslategrey">{{ pin.displayname }}</span>
 			<a href="/logout"><button class="button">Sign out</button></a>
 			<a href="/home"><button class="button">Home</button></a>
 		</div>
-
+		<div class="nav">
+			<a href="/follow"><button class="button">Follow</button></a>
+		</div>
 		<div class="jumbotron center">
 
 			<div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>

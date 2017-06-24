@@ -22,18 +22,9 @@
 <body>
 	<div class="container main">
 		<div class="nav">
-			<span style="font-size: 25pt; color: darkslategrey">{{ pin.username }}</span>
-			<a href="logout"><button class="button">Sign out</button></a>
-			<a href="/profile"><button class="button">View Profile</button></a>
-		</div>
-		<div class="submit_form">
-			<form action="/submit" method="post">
-				Title:<br>
-				<input type="text" max="30" name="title" required><br>
-				Enter Image URL:<br>
-				<input type="url" name="url" requiredSDDD><br>
-				<input type="submit" value="Add Photo">
-			</form>
+			<span style="font-size: 25pt; color: darkslategrey">{{ pin.displayname }}</span>
+			<a href="/logout"><button class="button">Sign out</button></a>
+			<a href="/home"><button class="button">Home</button></a>
 		</div>
 
 		<div class="jumbotron center">
@@ -47,12 +38,7 @@
 						<div class="grid-thumbnail-text">
 							<p class="text-center">{{ pins.title }}</p>
 							<p class="text-center">{{ pins.username }}</p>
-							{# if Likes.find({ liked: pins.id }) #}
-							<p class="text-center"><a href="/api/like/{{ pins._id }}">Liked</a></p>
-							{# else #}
-							<p class="text-center"><a href="/api/like/{{ pins._id }}">Like</a></p>
-							{# endif #}
-
+							<p class="text-center"><a href="/api/delete/{{ pins._id }}">Delete</a></p>
 						</div>
 					</div>
 				{% endfor %}

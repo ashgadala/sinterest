@@ -8,13 +8,15 @@ import * as passport from 'passport';
 import * as mongoose from 'mongoose';
 import fav = require('./favicon');
 
+
 // Configure
 app.use(express.static('views'));
 app.use(express.cookieParser());
 app.use(express.bodyParser());
 app.use(express.session({ secret: 'Shhh.. This is a secret' }));
 app.use(passport.initialize());
-app.use(passport.session({ secret: 'Shhh.. This is a secret', cookie: { secure: true } }));
+app.use(passport.session({ secret: 'Shhh.. This is a secret', cookie: { secure: true },saveUninitialized: false,
+    resave: false }));
 app.use(fav);
 // Nunjucks
 nunjucks.configure('views', {
@@ -30,6 +32,8 @@ mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection 
 // Models
 import User = require('./models/users');
 import Pin  = require('./models/pins');
+import Following = require('./models/following');
+import Likes = require('./models/liked');
 
 // Passport twitter suthentication:
 var TwitterStrategy = require('passport-twitter').Strategy;
@@ -92,28 +96,42 @@ app.get('/auth/twitter/callback', passport.authenticate('twitter', {
     failureRedirect: '/'
 }));
 
-app.get('/', function(req, res, next) {
-    if(!req.isAuthenticated()) {
-        return res.render('index.html');
-    }
-    res.redirect('/home');
+app.get('/', function(req, res) {
+    // if(req.isAuthenticated()) {
+    //     return res.redirect('/home');
+    //     //res.redirect('/home');
+    // }
+    res.render('index.html');
 });
 
 app.get('/home', function(req, res, next) {
     if(!req.isAuthenticated()) {
-        return res.render('index.html');
+           return res.redirect('/'); 
+        
     }
-    Pin.find({ username: req.user.username }).select({ title:1, url:1, username:1 }).exec(function(err, pins) {
-            console.log(pins);
-            res.render('home.html', { pin: pins });
+
+    Pin.find({  }).select({ _id:1, title:1, url:1, username:1 }).exec(function(err, pins) {
+        console.log(pins);
+        return res.render('home.html', { pin: pins });
     });
     
 });
 
 app.get('/profile', function(req, res, next) {
-    Pin.find({ username: req.user.username }).select({ title:1, url:1, username:1 }).exec(function(err, pins) {
+    if(!req.isAuthenticated()) {
+           return res.redirect('/'); 
+        
+    }
+    Pin.find({ username: req.user.username }).select({ title:1, url:1, username:1, displayname:1 }).exec(function(err, pins) {
             console.log(pins);
             res.render('profile.html', { pin: pins });
+    });
+});
+
+app.get('/profile/:username', function(req, res, next) {
+    Pin.find({ username: req.params.username }).select({ title:1, url:1, username:1, displayname:1 }).exec(function(err, pins) {
+            console.log(pins);
+            res.render('profile.html', { pin: pins, username:req.params.username });
     });
 });
 
@@ -129,11 +147,59 @@ app.post('/submit', function(req, res, next) {
     });
 });
 
-app.get('/logout', function(req, res, next) {
+// Not yet ready
+app.get('/follow', function(req, res) {
+    if(!req.isAuthenticated()) {
+           return res.redirect('/');      
+    }
+    var new_follower = new Following;
+    new_follower.userId = req.user.username,
+    new_follower.following_users.push(req.param('username'));
+    new_follower.save(function(err, data) {
+        if(err) throw err;
+        res.redirect('/home');
+    });
+});
+
+// Delete
+app.get('/delete', function(req, res) {
+    if(!req.isAuthenticated()) {
+           return res.redirect('/');      
+    }
+    Pin.find({ username: req.user.username }).select({ _id:1, title:1, url:1, username:1, displayname:1 }).exec(function(err, pins) {
+            console.log(pins);
+            res.render('delete.html', { pin: pins });
+    });
+});
+
+app.get('/api/delete/:id', function(req, res, next) {
+   Pin.find( { _id: req.params.id }).remove().exec(function(err, doc) {
+       if (err) {
+           throw err;
+       }
+
+       res.redirect('/home');
+   });
+});
+
+
+app.get('/api/like/:id', function(req, res) {
+    var new_like = new Likes;
+    new_like.userId = req.user.username;
+    new_like.liked.push(req.params.id);
+    new_like.save(function(err, data) {
+        if(err) throw err;
+        res.redirect('/home');
+    });
+});
+
+
+
+app.get('/logout', function(req, res){
+    console.log('logging out');
     req.logout();
     res.redirect('/');
 });
-
 
 app.listen(process.env.PORT || 3000);
 
