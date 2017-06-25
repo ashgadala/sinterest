@@ -43,7 +43,7 @@ passport.deserializeUser(function (id, done) {
 passport.use(new TwitterStrategy({
     consumerKey: 'wSpyuo23PqU7pt28GifoUvpgr',
     consumerSecret: 'YprEH3hFegOGiMjkxaIYFdVe1DtxIS2u5xx5Tof3vWdkJ3DRQG',
-    callbackURL: "	http://127.0.0.1:3000/auth/twitter/callback"
+    callbackURL: "http://sinterest-fcc.herokuapp.com/auth/twitter/callback"
 }, function (token, tokenSecret, profile, done) {
     process.nextTick(function () {
         User.findOne({ 'twitterID': profile.id }, function (err, user) {
